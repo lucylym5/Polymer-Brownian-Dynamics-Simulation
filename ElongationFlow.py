@@ -1,3 +1,7 @@
+"""
+    计算平面拉伸流中, 链伸展量 x/l_c 随时间 t 变化曲线
+"""
+
 import argparse
 import csv
 import json

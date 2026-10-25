@@ -125,7 +125,7 @@ def plot_results(results, fits, config, output_dir, show=False):
     )
     panels = [
         ("rg", "rg_rms", "rg_rms_theory",
-         r"$\log\sqrt{\langle R_g^2\rangle}$", "Equilibrium single-chain size"),
+         r"$\log R_g$", "Equilibrium single-chain size"),
         ("tau", "tau", "tau_theory",
          r"$\log\tau_R$", "Longest mode correlation time"),
     ]
@@ -135,7 +135,7 @@ def plot_results(results, fits, config, output_dir, show=False):
         ax.plot(x[valid], np.log(values[valid]), "o", label="Simulation")
         ax.plot(
             x, np.log([row[theory] for row in results]), "--",
-            color="0.4", label="Finite-N theory",
+            color="0.4", label="Finite-N theory", zorder=3,
         )
         fit = fits[key]
         if fit is not None:
@@ -178,7 +178,7 @@ def plot_results(results, fits, config, output_dir, show=False):
             label=f'N={row["N"]}',
         )
     scaled_time = np.linspace(0, config["duration"], 300)
-    ax.plot(scaled_time, np.exp(-scaled_time), "k--", label=r"$e^{-t/\tau_{\rm theory}}$")
+    ax.plot(scaled_time, np.exp(-scaled_time), "k--", label=r"$e^{-t/\tau_{\rm theory}}$", zorder=3)
     ax.axvspan(config["fit_start"], config["fit_end"], color="grey", alpha=0.1)
     ax.set(
         xlabel=r"$t/\tau_{\rm theory}$", ylabel=r"$C_1(t)$",

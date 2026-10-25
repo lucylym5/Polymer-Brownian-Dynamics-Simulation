@@ -1,0 +1,63 @@
+{
+  "config": {
+    "n_min": 20,
+    "n_max": 90,
+    "n_step": 10,
+    "chains": 500,
+    "dt": 0.05,
+    "duration": 3.0,
+    "samples_per_tau": 100,
+    "fit_start": 0.2,
+    "fit_end": 1.5,
+    "H": 1.0,
+    "Q0_square": 100.0,
+    "gamma": 1,
+    "kBT": 1,
+    "seed": 2026,
+    "workers": 4,
+    "bead_numbers": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90
+    ]
+  },
+  "fits": {
+    "rg": {
+      "slope": 0.5037258504273481,
+      "intercept": -0.3840985642967595,
+      "slope_se": 0.0032196666051166425,
+      "r_squared": 0.9997549367795927
+    },
+    "tau": {
+      "slope": 1.9143794671900514,
+      "intercept": -1.9981480647311254,
+      "slope_se": 0.07764303412004614,
+      "r_squared": 0.9902268427469342
+    }
+  },
+  "axes_sizes_pixels_at_figure_dpi": [
+    {
+      "width": 484.28022222222245,
+      "height": 363.2101666666668
+    },
+    {
+      "width": 484.28022222222194,
+      "height": 363.21016666666657
+    }
+  ],
+  "notes": [
+    "FENE springs are advanced by the existing explicit Euler-Maruyama step; no implicit step or bond clipping is used.",
+    "Initial bonds are sampled from the FENE equilibrium distribution, with squared relative lengths following Beta(3/2, 1 + H*Q0_square/(2*kBT)).",
+    "Left panel fits log(sqrt(mean(Rg^2))) against log(N).",
+    "Right panel fits log(measured tau) against log(N).",
+    "Each N runs for about duration*tau_theory; fit-start and fit-end are in units of tau_theory.",
+    "tau_theory is the Hookean reference used only for run length, sampling, fit window, and time normalization; analytical comparison curves are omitted.",
+    "Both plot boxes have width:height=4:3 and the same dimensions.",
+    "A non-decaying or non-positive correlation fit is omitted, never replaced by theory."
+  ]
+}

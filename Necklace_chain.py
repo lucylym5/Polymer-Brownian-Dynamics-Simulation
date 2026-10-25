@@ -62,3 +62,14 @@ def initialize_chain(
 
     return r
 
+
+def WCA_force(
+        r: np.ndarray,
+        epsilon: float,
+        sigma: float,
+
+):
+    force = np.zeros_like(r, dtype=float)
+    
+    return
+
