@@ -1,0 +1,60 @@
+{
+  "config": {
+    "n_min": 20,
+    "n_max": 90,
+    "n_step": 10,
+    "chains": 500,
+    "dt": 0.05,
+    "duration": 3.0,
+    "samples_per_tau": 100,
+    "fit_start": 0.2,
+    "fit_end": 1.5,
+    "H": 1.0,
+    "gamma": 1,
+    "kBT": 1,
+    "seed": 2026,
+    "workers": 4,
+    "bead_numbers": [
+      20,
+      30,
+      40,
+      50,
+      60,
+      70,
+      80,
+      90
+    ]
+  },
+  "fits": {
+    "rg": {
+      "slope": 0.5081761998388051,
+      "intercept": -0.3752638528866819,
+      "slope_se": 0.0030474115539067155,
+      "r_squared": 0.9997842796425623
+    },
+    "tau": {
+      "slope": 2.1128533991496505,
+      "intercept": -2.6833292419916246,
+      "slope_se": 0.05776704685892311,
+      "r_squared": 0.9955349188966898
+    }
+  },
+  "axes_sizes_pixels_at_figure_dpi": [
+    {
+      "width": 480.3788333333334,
+      "height": 360.284125
+    },
+    {
+      "width": 480.3788333333331,
+      "height": 360.2841249999999
+    }
+  ],
+  "notes": [
+    "Left panel fits log(sqrt(mean(Rg^2))) against log(N).",
+    "Right panel fits log(measured tau) against log(N).",
+    "Each N runs for about duration*tau_theory; fit-start and fit-end are in units of tau_theory.",
+    "The theory only sets run length, sampling, fit window, and reference curves; bead dynamics determine the measured values.",
+    "Both plot boxes have width:height=4:3 and the same dimensions.",
+    "A non-decaying or non-positive correlation fit is omitted, never replaced by theory."
+  ]
+}
