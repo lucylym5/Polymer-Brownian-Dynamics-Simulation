@@ -1,10 +1,14 @@
-""" 在无流动条件下，遍历N∈[20,100]， 绘制log(sqrt{<Rg^2>})-logN关系，
-    并对结果进行线性拟合，把拟合后的直线画在原图上，并在旁边标记斜率。
+""" 
+    采用Hookean弹簧的Rouse模型, 无流动, 不考虑排斥体积效应
 
-    绘制log(tau)-logN关系，同样对结果进行线性拟合，把拟合后的直线画在原图上，并在旁边标记斜率。
+    遍历N∈[20,90],  绘制log(sqrt{<Rg^2>})-logN关系
+    对结果进行线性拟合，把拟合后的直线画在原图上，并在旁边标记斜率
 
-    默认 M=500、dt=0.05；每个 N 推进约 3*tau_theory，
-    在 0.2*tau_theory 到 1.5*tau_theory 区间拟合松弛时间。
+    绘制log(tau)-logN关系,
+    同样对结果进行线性拟合，把拟合后的直线画在原图上，并在旁边标记斜率
+
+    默认 M=500、dt=0.05; 每个 N 推进约 3*tau_theory,
+    在 0.2*tau_theory 到 1.5*tau_theory 区间拟合松弛时间
 """
 
 import argparse
@@ -43,7 +47,7 @@ def simulate_chain_length(N, config):
     rng = np.random.default_rng(
         np.random.SeedSequence(config["seed"], spawn_key=(int(N),))
     )
-    r = nc.initialize_chain(M, N, kBT, H, rng)
+    r = nc.initialize_chain("Hookean", M, N, kBT, H, sigma=1.0, rng=rng)
     velocity_gradient = np.zeros((3, 3))
     tau_theory = float(ob.theoretical_relaxation_time(N, H, gamma))
     n_steps = int(np.ceil(config["duration"] * tau_theory / dt))
@@ -63,7 +67,7 @@ def simulate_chain_length(N, config):
     for step in range(1, n_steps + 1):
         r = ts.euler_maruyama_step(
             "Hookean", r, velocity_gradient, kBT, gamma, H,
-            1.0, dt, rng,  # Hookean 力不使用 Q0_square。
+            1.0, dt, 1.0, 1.0, rng,  # Hookean 力不使用 Q0_square。
         )
         if step % save_every == 0 or step == n_steps:
             record(step)

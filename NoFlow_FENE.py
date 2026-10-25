@@ -1,12 +1,15 @@
-""" 在无流动条件下模拟 FENE 链，绘制log(sqrt{<Rg^2>})-logN关系，
-    并对结果进行线性拟合，把拟合后的直线画在原图上，并在旁边标记斜率。
-
-    绘制log(tau)-logN关系，同样对结果进行线性拟合，把拟合后的直线画在原图上，并在旁边标记斜率。
-
-    默认 N=20,30,...,90、M=500、dt=0.05、Q0_square=100。
-    使用显式 Euler-Maruyama 更新；每个 N 推进约 3*tau_theory，
-    在 0.2*tau_theory 到 1.5*tau_theory 区间拟合松弛时间。
-    tau_theory 沿用胡克链公式，仅用于时间设置和归一化，不绘制解析对比曲线。
+""" 
+    采用FENE弹簧的Rouse模型, 无流动, 不考虑排斥体积效应
+    
+    遍历N∈[20,90],  绘制log(sqrt{<Rg^2>})-logN关系
+    对结果进行线性拟合，把拟合后的直线画在原图上，并在旁边标记斜率
+    
+    绘制log(tau)-logN关系,
+    同样对结果进行线性拟合，把拟合后的直线画在原图上，并在旁边标记斜率
+    
+    默认 M=500、dt=0.05; 每个 N 推进约 3*tau_theory,
+    在 0.2*tau_theory 到 1.5*tau_theory 区间拟合松弛时间
+    其中tau_theory 沿用胡克链公式，仅用于时间设置和归一化，不绘制解析对比曲线
 """
 
 import argparse
@@ -62,7 +65,7 @@ def simulate_chain_length(N, config):
     rng = np.random.default_rng(
         np.random.SeedSequence(config["seed"], spawn_key=(int(N),))
     )
-    r = initialize_fene_chain(M, N, kBT, H, Q0_square, rng)
+    r = nc.initialize_chain("FENE", M, N, kBT, H, sigma=1.0, rng=rng, Q0_square=Q0_square)
     velocity_gradient = np.zeros((3, 3))
     # 胡克链时间作为统一参考尺度；FENE 的松弛时间仍从模拟的 C(t) 拟合。
     tau_theory = float(ob.theoretical_relaxation_time(N, H, gamma))
@@ -83,7 +86,7 @@ def simulate_chain_length(N, config):
     for step in range(1, n_steps + 1):
         r = ts.euler_maruyama_step(
             "FENE", r, velocity_gradient, kBT, gamma, H,
-            Q0_square, dt, rng,
+            Q0_square, dt, 1.0, 1.0, rng,
         )
         q = nc.connection_vector(r)
         if not np.all(np.sum(q**2, axis=-1) < Q0_square):

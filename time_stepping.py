@@ -11,18 +11,24 @@ def euler_maruyama_step(
         H: float,
         Q0_square: float,
         dt: float,
+        epsilon_ev: float,
+        sigma_ev: float,
         rng,
 ):
-    force = nc.spring_force(
+    spring_force = nc.spring_force(
         name, r, H, Q0_square
     )
+    ev_force = nc.WCA_force(
+        r, epsilon_ev, sigma_ev
+    )
+
     flow_term = r @ velocity_gradient.T * dt
-    spring_term = force / gamma * dt
+    force_term = (spring_force + ev_force) / gamma * dt
     D = kBT / gamma
     noise = np.sqrt(2 * D * dt) * rng.standard_normal(size = r.shape)
 
-    # 考虑每个珠子的 Langevin 方程
-    return r + flow_term + spring_term + noise
+    return r + flow_term + force_term + noise
+
 
 def semi_implicit_fene_step(
         r: np.ndarray,
@@ -32,6 +38,8 @@ def semi_implicit_fene_step(
         H: float,
         Q0_square: float,
         dt: float,
+        epsilon_ev,
+        sigma_ev,
         rng,
         max_iterations=500,
         tol=1e-9,
@@ -41,7 +49,8 @@ def semi_implicit_fene_step(
 
     flow_term = r @ velocity_gradient.T * dt
     noise = np.sqrt(2 * D * dt) * rng.standard_normal(size = r.shape)
-    r_mid = r + flow_term + noise    # 只考虑流动和随机力时的位置
+    ev_force = nc.WCA_force(r, epsilon_ev, sigma_ev)
+    r_mid = r + flow_term + ev_force * dt / gamma + noise  # 不考虑弹簧力时的位置
 
     # 正确新位置与 r_mid 残差
     def equation_residual(r_new):
